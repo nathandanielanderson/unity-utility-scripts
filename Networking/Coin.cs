@@ -7,7 +7,7 @@ public class Coin : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the object entering the trigger is the player and is the local player
+        // Check if the object entering the trigger is a Player
         if (other.CompareTag("Player") && other.GetComponent<NetworkIdentity>().isLocalPlayer)
         {
             isPlayerInRange = true;
@@ -16,7 +16,7 @@ public class Coin : NetworkBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        // Check if the object exiting the trigger is the player and is the local player
+        // Check if the object exiting the trigger is a Player
         if (other.CompareTag("Player") && other.GetComponent<NetworkIdentity>().isLocalPlayer)
         {
             isPlayerInRange = false;
@@ -28,26 +28,14 @@ public class Coin : NetworkBehaviour
         // Check if the player is in range and right-clicks
         if (isPlayerInRange && Input.GetMouseButtonDown(1)) // 1 is the right mouse button
         {
-            CmdRequestDestroy();
+            CmdRequestDestroy(); // Request the server to destroy the coin
         }
     }
 
     [Command]
-    private void CmdRequestDestroy(NetworkConnectionToClient sender = null)
+    private void CmdRequestDestroy()
     {
-        // Assign authority to the client temporarily
-        AssignAuthority(sender);
-
         // Destroy the coin on the server (and sync to all clients)
         NetworkServer.Destroy(gameObject);
-    }
-
-    private void AssignAuthority(NetworkConnectionToClient sender)
-    {
-        if (sender != null)
-        {
-            // Assign authority to the requesting client
-            GetComponent<NetworkIdentity>().AssignClientAuthority(sender);
-        }
     }
 }
