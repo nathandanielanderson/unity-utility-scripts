@@ -27,15 +27,26 @@ public class CoinSpawner : NetworkBehaviour
     [Server]
     private void SpawnCoin()
     {
-        // Random position within the spawn area
-        Vector3 randomPosition = new Vector3(
-            Random.Range(-spawnAreaSize.x / 2, spawnAreaSize.x / 2),
-            1f, // Height
-            Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2)
-        );
+        Vector3 spawnPosition;
+
+        // Check if the spawn area size is (0, 0, 0)
+        if (spawnAreaSize == Vector3.zero)
+        {
+            // Spawn at the spawner object's origin
+            spawnPosition = transform.position;
+        }
+        else
+        {
+            // Spawn at a random position within the defined spawn area
+            spawnPosition = new Vector3(
+                Random.Range(-spawnAreaSize.x / 2, spawnAreaSize.x / 2),
+                1f, // Height
+                Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2)
+            ) + transform.position; // Offset by the spawner's position
+        }
 
         // Instantiate and spawn the coin
-        GameObject coin = Instantiate(coinPrefab, randomPosition, Quaternion.identity);
+        GameObject coin = Instantiate(coinPrefab, spawnPosition, Quaternion.identity);
         NetworkServer.Spawn(coin);
     }
 }
