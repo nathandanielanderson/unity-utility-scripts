@@ -9,6 +9,7 @@ public class TriggerPickupNetworked : NetworkBehaviour
     public vTriggerGenericAction baseTriggerAction;  // Reference to the base trigger action
     private bool hasBeenClaimed = false;  // Prevents multiple players from claiming ownership
 
+    
     // Handles the delay before performing the action (e.g., pickup delay)
     public IEnumerator ExecutePressActionDelay(GameObject obj)
     {
@@ -16,10 +17,12 @@ public class TriggerPickupNetworked : NetworkBehaviour
 
         if (isServer)  // If this is the server
         {
+            Debug.Log("This is Server.");
             HandleServerAction(obj);  // Perform the action directly on the server
         }
         else if (isClient)  // If this is a client
         {
+            Debug.Log("This is Client.");
             CmdRequestOwnership(obj);  // Request ownership from the server
         }
     }
@@ -40,6 +43,7 @@ public class TriggerPickupNetworked : NetworkBehaviour
 
     private void HandleServerAction(GameObject obj)
     {
+        Debug.Log("HandleServerAction called on server.");
         if (obj != null)
         {
             // Invoke the client RPC to sync the action across all clients
