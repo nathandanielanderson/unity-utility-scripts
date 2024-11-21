@@ -3,20 +3,39 @@ using Mirror;
 
 public class Coin : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(OnCoinSetup))]
-    public int coinValue; // Value of the coin, synced to all clients
+    private bool isPlayerInRange = false; // Tracks if a player is in the trigger range
 
-    public GameObject coinVisual; // Visual representation of the coin
-
-    // Hook called when coinValue changes
-    private void OnCoinSetup(int oldValue, int newValue)
+    private void OnTriggerEnter(Collider other)
     {
-        UpdateVisual(newValue);
+        // Check if the object entering the trigger is a player and is the local player
+        if (other.CompareTag("Player") && other.GetComponent<NetworkIdentity>().isLocalPlayer)
+        {
+            isPlayerInRange = true;
+        }
     }
 
-    private void UpdateVisual(int value)
+    private void OnTriggerExit(Collider other)
     {
-        // Example: Change material or size based on coin value
-        // Add your custom logic for updating visuals here
+        // Check if the object exiting the trigger is the local player
+        if (other.CompareTag("Player") && other.GetComponent<NetworkIdentity>().isLocalPlayer)
+        {
+            isPlayerInRange = false;
+        }
+    }
+
+    private void Update()
+    {
+        // Check if the player is in range and right-clicks
+        if (isPlayerInRange && Input.GetMouseButtonDown(1)) // 1 is the right mouse button
+        {
+            CmdDestroyCoin();
+        }
+    }
+
+    [Command]
+    private void CmdDestroyCoin()
+    {
+        // Destroy the coin on the server (and sync to all clients)
+        NetworkServer.Destroy(gameObject);
     }
 }
