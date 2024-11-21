@@ -7,6 +7,7 @@ using Invector.vCharacterController.vActions;
 public class TriggerPickupNetworked : NetworkBehaviour
 {
     public vTriggerGenericAction baseTriggerAction;  // Reference to the base trigger action
+    private bool hasBeenClaimed = false;  // Prevents multiple players from claiming ownership
 
     // Handles the delay before performing the action (e.g., pickup delay)
     public IEnumerator ExecutePressActionDelay(GameObject obj)
@@ -19,14 +20,22 @@ public class TriggerPickupNetworked : NetworkBehaviour
         }
         else if (isClient)  // If this is a client
         {
-            CmdTriggerPickup(obj);  // Send a command to the server to perform the action
+            CmdRequestOwnership(obj);  // Request ownership from the server
         }
     }
 
-    [Command]  // Command to send from client to server
-    private void CmdTriggerPickup(GameObject obj)
+    [Command]  // Command to request ownership from the server
+    private void CmdRequestOwnership(GameObject obj, NetworkConnectionToClient sender = null)
     {
-        HandleServerAction(obj);  // Perform the action on the server
+        Debug.Log("CmdRequestOwnership called on server.");
+        if (hasBeenClaimed) return; // If already claimed, ignore
+
+        // Assign authority to the requesting player
+        obj.GetComponent<NetworkIdentity>().AssignClientAuthority(sender);
+        hasBeenClaimed = true;
+
+        // Perform the server-side action
+        HandleServerAction(obj);
     }
 
     private void HandleServerAction(GameObject obj)
@@ -44,6 +53,7 @@ public class TriggerPickupNetworked : NetworkBehaviour
     [ClientRpc]  // Client RPC to execute the action on all clients
     private void RpcTriggerPickup(GameObject obj)
     {
+        Debug.Log("RpcTriggerPickup called on clients.");
         if (obj != null)
         {
             // Invoke Unity events and trigger actions
