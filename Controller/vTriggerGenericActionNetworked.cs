@@ -12,35 +12,20 @@ public class vTriggerGenericActionNetworked : NetworkBehaviour
     {
         yield return new WaitForSeconds(baseTriggerAction.onPressActionDelay);
 
-        if (isServer)  // If this is the server
+        if (obj && isServer)  // Check if this is the server
         {
-            HandleServerAction(obj);  // Call server-specific action handling
+            RpcTriggerAction(obj);  // Call a client RPC to trigger the action across all clients
         }
-        else if (isClient)  // If this is a client
+        else if (obj)  // For clients, send the command to the server without authority check
         {
-            CmdTriggerAction(obj);  // Send a command to the server to handle the action
+            CmdTriggerAction(obj);  // Send a command to the server
         }
     }
 
     [Command]  // Server command
     private void CmdTriggerAction(GameObject obj)
     {
-        HandleServerAction(obj);  // Call the server-side logic
-    }
-
-    private void HandleServerAction(GameObject obj)
-    {
-        if (obj != null)
-        {
-            // Trigger actions on the object
-            RpcTriggerAction(obj);
-
-            // Destroy the object on the server (and sync destruction across all clients)
-            if (baseTriggerAction.destroyAfter)
-            {
-                NetworkServer.Destroy(obj);
-            }
-        }
+        RpcTriggerAction(obj);  // Call the client RPC from the server
     }
 
     [ClientRpc]  // Executes on all clients
@@ -48,14 +33,11 @@ public class vTriggerGenericActionNetworked : NetworkBehaviour
     {
         if (obj != null)
         {
-            // Invoke Unity events and trigger actions
             baseTriggerAction.OnPressActionInput.Invoke();
             baseTriggerAction.onPressActionInputWithTarget.Invoke(obj);
-
-            // Optionally destroy the object locally (if delay is needed before server syncs destruction)
-            if (!isServer && baseTriggerAction.destroyAfter)
+            if (baseTriggerAction.destroyAfter)
             {
-                Destroy(obj, baseTriggerAction.destroyDelay);  // Local destruction
+                Destroy(obj, baseTriggerAction.destroyDelay);  // Destroy with delay if needed
             }
         }
     }
