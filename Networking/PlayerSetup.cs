@@ -36,7 +36,7 @@ public class PlayerSetup : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         // Check if the item has the appropriate tag or component
-        if (item.CompareTag("Interactable") && item.GetComponent<NetworkIdentity>())
+        if (item.CompareTag("Pickup") && item.GetComponent<NetworkIdentity>())
         {
             // Send a command to the server to handle item pickup
             CmdPickupItem(item);
@@ -52,7 +52,7 @@ public class PlayerSetup : NetworkBehaviour
         if (item == null) return;
 
         // Validate the item on the server
-        if (item.CompareTag("Interactable"))
+        if (item.CompareTag("Pickup"))
         {
             // Perform server-side logic for the item (e.g., destroy or transfer ownership)
             Debug.Log($"Server: Player {connectionToClient.connectionId} picked up {item.name}");
