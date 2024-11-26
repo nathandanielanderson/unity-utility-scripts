@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 217761261035577979}
   - component: {fileID: 8865622124377505652}
   - component: {fileID: 6681016059423941380}
+  - component: {fileID: 9160267191402267029}
+  - component: {fileID: 1543278120715093199}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Interactable
@@ -81,6 +83,35 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!54 &9160267191402267029
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217761261035577982}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 10
+  m_CollisionDetection: 0
+--- !u!135 &1543278120715093199
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217761261035577982}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.1
+  m_Center: {x: 0, y: -0.39, z: 0}
 --- !u!1 &1651489145153761658
 GameObject:
   m_ObjectHideFlags: 0
