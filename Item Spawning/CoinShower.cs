@@ -68,4 +68,16 @@ public class CoinShower : NetworkBehaviour
     {
         spawning = false;
     }
+
+    private void OnDrawGizmos()
+    {
+        // Set Gizmo color
+        Gizmos.color = Color.yellow;
+
+        // Calculate the center of the spawn area
+        Vector3 center = transform.position + new Vector3(0, spawnHeight / 2, 0);
+
+        // Draw a wireframe box to represent the spawn area
+        Gizmos.DrawWireCube(center, new Vector3(spawnAreaSize.x, spawnHeight, spawnAreaSize.z));
+    }
 }
