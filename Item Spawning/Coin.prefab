@@ -83,6 +83,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  pickupSound: {fileID: 8300000, guid: 2a56e87783adb4d00929dadb5cd609ac, type: 3}
 --- !u!54 &9160267191402267029
 Rigidbody:
   m_ObjectHideFlags: 0

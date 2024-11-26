@@ -4,6 +4,8 @@ using System;
 
 public class Coin : NetworkBehaviour
 {
+    public AudioClip pickupSound; // Assign the coin pickup sound in the Inspector
+
     void OnTriggerEnter(Collider other)
     {
         // Check if the colliding object is the player
@@ -14,16 +16,22 @@ public class Coin : NetworkBehaviour
 
             if (interactions != null)
             {
-                // Call the Pickup method on the PlayerInteractions component
+                // Handle the pickup logic
                 if (isServer)
                 {
                     interactions.Pickup(gameObject);
+                }
+
+                // Play sound locally for the player
+                if (interactions.isLocalPlayer)
+                {
+                    interactions.PlayPickupSound(pickupSound);
                 }
             }
         }
     }
 
-     // Static event to notify when a coin is destroyed
+    // Static event to notify when a coin is destroyed
     public static event Action<Coin> OnCoinDestroyed;
 
     private void OnDestroy()
