@@ -32,7 +32,14 @@ public class PlayerInteractions : NetworkBehaviour
     {
         if (clip != null && isLocalPlayer)
         {
-            audioSource.PlayOneShot(clip);
+            // Create a temporary audio source for overlapping playback
+            AudioSource tempSource = gameObject.AddComponent<AudioSource>();
+            tempSource.clip = clip;
+            tempSource.volume = 0.8f; // Set a base volume
+
+            // Play the sound and destroy the temporary audio source after it finishes
+            tempSource.Play();
+            Destroy(tempSource, clip.length);
         }
     }
 
