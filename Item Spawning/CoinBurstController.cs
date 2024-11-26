@@ -16,6 +16,12 @@ public class CoinBurstController : MonoBehaviour
         }
     }
 
+    public void Start()
+    {
+        // Burst the coins when the GameObject is enabled
+        BurstCoins();
+    }
+
     public void BurstCoins()
     {
         if (particleSystem == null) return;
