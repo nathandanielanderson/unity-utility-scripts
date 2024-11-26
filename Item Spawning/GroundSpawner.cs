@@ -2,12 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using Mirror;
 
-public class GroundSpawner : MonoBehaviour
+public class GroundSpawner : NetworkBehaviour
 {
-    public GameObject coinSpawnerPrefab; // Assign the CoinSpawner prefab in the Inspector
+    
+    public GameObject coinPrefab; // Assign the CoinSpawner prefab in the Inspector
 
     private void OnParticleCollision(GameObject particleSystemObject)
     {
+        if(!isServer) return;
         ParticleSystem particleSystem = particleSystemObject.GetComponent<ParticleSystem>();
 
         if (particleSystem == null) return;
@@ -18,7 +20,9 @@ public class GroundSpawner : MonoBehaviour
         foreach (var collisionEvent in collisionEvents)
         {
             Vector3 spawnPosition = collisionEvent.intersection;
-            Instantiate(coinSpawnerPrefab, spawnPosition, Quaternion.identity);
+            // Instantiate the spawner prefab at the collision position
+            GameObject spawned = Instantiate(coinPrefab, spawnPosition, Quaternion.identity);
+            NetworkServer.Spawn(spawned);
         }
     }
 }
