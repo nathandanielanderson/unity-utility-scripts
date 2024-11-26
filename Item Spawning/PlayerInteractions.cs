@@ -39,12 +39,10 @@ public class PlayerInteractions : NetworkBehaviour
     // Called when the player picks up an item
     public void Pickup(GameObject item)
     {
-        if (!isLocalPlayer) return; // Ensure this only happens for the local player
-
         Debug.Log($"Picked up: {item.name}");
 
         // Check if the item is a coin
-        if (item.CompareTag("Coin"))
+        if (item.CompareTag("Coin") && isLocalPlayer)
         {
             // Enable the coin icon if it is currently disabled
             if (coinIcon != null && !coinIcon.activeSelf)
@@ -58,8 +56,6 @@ public class PlayerInteractions : NetworkBehaviour
             // Update the UI
             UpdateCoinUI();
 
-            // Optionally, play a pickup sound for the local player
-            PlayPickupSound(item.GetComponent<Coin>().pickupSound); // Assuming Coin prefab has a pickupSound field
         }
 
         // Destroy the item after picking it up (handled on the server)

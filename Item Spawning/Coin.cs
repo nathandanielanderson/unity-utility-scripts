@@ -4,31 +4,35 @@ using System;
 
 public class Coin : NetworkBehaviour
 {
-    public AudioClip pickupSound; // Assign the coin pickup sound in the Inspector
+    [SerializeField] private AudioClip pickupSound; // Assign the coin pickup sound in the Inspector
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        // Check if the colliding object is the player
+        // Check if the colliding object is a player
         if (other.CompareTag("Player"))
         {
-            // Get the PlayerInteractions component
-            PlayerInteractions interactions = other.GetComponent<PlayerInteractions>();
+            // Get the PlayerInteractions component from the player
+            PlayerInteractions player = other.GetComponent<PlayerInteractions>();
 
-            if (interactions != null)
+            if (player != null)
             {
-                // Handle the pickup logic
-                if (isServer)
-                {
-                    interactions.Pickup(gameObject);
-                }
-
-                // Play sound locally for the player
-                if (interactions.isLocalPlayer)
-                {
-                    interactions.PlayPickupSound(pickupSound);
-                }
+                HandlePickup(player);
             }
         }
+    }
+
+    private void HandlePickup(PlayerInteractions player)
+    {
+            // Server handles the game state (destroying the coin, updating coin count)
+            if (player.isLocalPlayer)
+            {
+                // Play the pickup sound for the local player
+                player.PlayPickupSound(pickupSound);
+            }
+            
+            player.Pickup(gameObject);
+            
+
     }
 
     // Static event to notify when a coin is destroyed
