@@ -82,10 +82,10 @@ public class SettingsManager : MonoBehaviour
         Debug.Log("Logout initiated");
         CloseAllTabs();
 
-        // Make cursor visible
-        Cursor.visible = true;
-
         // Optionally, notify PlayerTabManager
         PlayerTabManager.Instance?.CloseAllTabs();
+
+        // Refresh the page
+        Application.OpenURL(Application.absoluteURL);
     }
 }
