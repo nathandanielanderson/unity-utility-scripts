@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerTabManager : MonoBehaviour
 {
+    public static PlayerTabManager Instance { get; private set; }
 
     [SerializeField] private GameObject socialTab;
     [SerializeField] private Button socialButton;
@@ -14,8 +15,8 @@ public class PlayerTabManager : MonoBehaviour
     [SerializeField] private GameObject inventoryTab;
     [SerializeField] private Button inventoryButton;
 
-    [SerializeField] private Color highlightColor = Color.green; // Color slot for highlight color
-    [SerializeField] private Color defaultColor = Color.white;   // Color slot for default color
+    [SerializeField] private Color highlightColor = Color.green;
+    [SerializeField] private Color defaultColor = Color.white;
 
     private List<GameObject> tabs;
     private List<Button> buttons;
@@ -24,15 +25,19 @@ public class PlayerTabManager : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize lists with all tab panels and buttons
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         tabs = new List<GameObject> { socialTab, statsTab, inventoryTab };
         buttons = new List<Button> { socialButton, statsButton, inventoryButton };
 
-        // Ensure all tabs are closed and no buttons are highlighted at the start
         CloseAllTabs();
     }
 
-    // Closes all tabs and removes highlight from all buttons
     public void CloseAllTabs()
     {
         foreach (GameObject tab in tabs)
@@ -49,7 +54,6 @@ public class PlayerTabManager : MonoBehaviour
         currentHighlightedButton = null;
     }
 
-    // Resets button highlight to the default color
     private void ResetButtonHighlight(Button button)
     {
         ColorBlock colors = button.colors;
@@ -58,7 +62,6 @@ public class PlayerTabManager : MonoBehaviour
         button.colors = colors;
     }
 
-    // Highlights the specified button with the highlight color
     private void HighlightButton(Button button)
     {
         ColorBlock colors = button.colors;
@@ -67,14 +70,13 @@ public class PlayerTabManager : MonoBehaviour
         button.colors = colors;
     }
 
-    // Toggles the specified tab: opens it if closed, closes it if already open
     private void ToggleTab(GameObject tab, Button button)
     {
-        if (currentOpenTab == tab) // If the tab is already open, close it
+        if (currentOpenTab == tab)
         {
             CloseAllTabs();
         }
-        else // Otherwise, close other tabs, open this one, and highlight its button
+        else
         {
             CloseAllTabs();
             tab.SetActive(true);
@@ -83,8 +85,6 @@ public class PlayerTabManager : MonoBehaviour
             currentHighlightedButton = button;
         }
     }
-
-    // Public methods to open each tab via ToggleTab
 
     public void OpenSocial()
     {

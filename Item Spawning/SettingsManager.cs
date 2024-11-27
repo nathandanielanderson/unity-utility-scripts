@@ -17,15 +17,12 @@ public class SettingsManager : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize lists with all tab panels and buttons
-        tabs = new List<GameObject> { settingsTab};
-        buttons = new List<Button> { settingsButton};
+        tabs = new List<GameObject> { settingsTab };
+        buttons = new List<Button> { settingsButton };
 
-        // Ensure all tabs are closed and no buttons are highlighted at the start
         CloseAllTabs();
     }
 
-    // Closes all tabs and removes highlight from all buttons
     public void CloseAllTabs()
     {
         foreach (GameObject tab in tabs)
@@ -42,7 +39,6 @@ public class SettingsManager : MonoBehaviour
         currentHighlightedButton = null;
     }
 
-    // Resets button highlight to the default color
     private void ResetButtonHighlight(Button button)
     {
         ColorBlock colors = button.colors;
@@ -51,7 +47,6 @@ public class SettingsManager : MonoBehaviour
         button.colors = colors;
     }
 
-    // Highlights the specified button with the highlight color
     private void HighlightButton(Button button)
     {
         ColorBlock colors = button.colors;
@@ -60,14 +55,13 @@ public class SettingsManager : MonoBehaviour
         button.colors = colors;
     }
 
-    // Toggles the specified tab: opens it if closed, closes it if already open
     private void ToggleTab(GameObject tab, Button button)
     {
-        if (currentOpenTab == tab) // If the tab is already open, close it
+        if (currentOpenTab == tab)
         {
             CloseAllTabs();
         }
-        else // Otherwise, close other tabs, open this one, and highlight its button
+        else
         {
             CloseAllTabs();
             tab.SetActive(true);
@@ -77,11 +71,21 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // Public methods to open each tab via ToggleTab
     public void OpenSettings()
     {
         ToggleTab(settingsTab, settingsButton);
     }
 
+    public void Logout()
+    {
+        // Perform Web3 logout actions here
+        Debug.Log("Logout initiated");
+        CloseAllTabs();
 
+        // Make cursor visible
+        Cursor.visible = true;
+
+        // Optionally, notify PlayerTabManager
+        PlayerTabManager.Instance?.CloseAllTabs();
+    }
 }
