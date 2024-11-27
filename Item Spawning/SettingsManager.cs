@@ -86,6 +86,7 @@ public class SettingsManager : MonoBehaviour
         PlayerTabManager.Instance?.CloseAllTabs();
 
         // Refresh the page
-        Application.OpenURL(Application.absoluteURL);
+        // Call the JavaScript function to reload the page
+        Application.ExternalEval("location.reload();");
     }
 }
